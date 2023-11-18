@@ -1,6 +1,7 @@
 import cv2
 import os
 import numpy as np
+import time
 
 class Pixelator:
     def __init__(self, input_dir: str, output_dir: str) -> None:
@@ -13,11 +14,14 @@ class Pixelator:
 
         for filename in os.listdir(self.input_dir):
             if filename.endswith(('.jpg', '.jpeg', '.png', '.bmp', '.webp')):
+                start_time = time.time()
                 input_image_path = os.path.join(self.input_dir, filename)
                 pixelated_image = self.pixelate(input_image_path, percentage, blur_amount=blur_amount)
 
                 output_filename = os.path.join(self.output_dir, filename)
                 cv2.imwrite(output_filename, pixelated_image)
+                end_time = time.time()
+                print(f'Took {(end_time-start_time):.2f}s')
 
     def pixelate(self, image_path, percentage: int, blur_amount=9, resize_percentage=100):
         # Read the image using OpenCV
@@ -72,6 +76,7 @@ class Pixelator:
 
         for filename in os.listdir(self.input_dir):
             if filename.endswith(('.jpg', '.jpeg', '.png', '.bmp', '.webp')):
+                start_time = time.time()
                 input_image_path = os.path.join(self.input_dir, filename)
                 print(f"Processing {input_image_path}")
                 
@@ -79,6 +84,9 @@ class Pixelator:
 
                 output_filename = os.path.join(self.output_dir, filename)
                 cv2.imwrite(output_filename, image)
+
+                end_time = time.time()
+                print(f'Took {(end_time-start_time):.2f}s')
     
     def pixelate_and_segment(self, image_path, pixel_size, num_clusters, blur, upscale):
         # Read the image
@@ -87,7 +95,7 @@ class Pixelator:
         # Pixelate the image
         small = cv2.GaussianBlur(image, (blur, blur), 0)
         small = cv2.resize(small, None, fx=1.0 / pixel_size, fy=1.0 / pixel_size, interpolation=cv2.INTER_NEAREST)
-        result = cv2.resize(small, (int(image.shape[1]*upscale), int(image.shape[0]*upscale)), interpolation=cv2.INTER_NEAREST)
+        result = cv2.resize(small, (int(image.shape[1]*upscale/100), int(image.shape[0]*upscale/100)), interpolation=cv2.INTER_NEAREST)
 
         # Reshape the image into a 2D array of pixels
         pixels = result.reshape((-1, 3))  # Reshape to a 2D array (rows, columns)
