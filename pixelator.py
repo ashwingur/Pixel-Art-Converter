@@ -71,6 +71,9 @@ class Pixelator:
         # return filtered_img
 
     def kmeans(self, pixel_size: int, upscale_percentage=200, num_clusters=32, blur=3) -> None:
+        if blur < 1:
+            print(f"Error, blur was {blur} but should be at least 1")
+            return
         if not os.path.exists(self.output_dir):
             os.makedirs(self.output_dir)
 
