@@ -1,6 +1,3 @@
-import cv2
-import os
-
 from pixelator import Pixelator
 
 input_dir = 'input_folder'
